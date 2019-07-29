@@ -583,3 +583,526 @@ array([[&apos;a&apos;, 12, 1.1],
        [&apos;c&apos;, 12, 1.3]], dtype=object)
 </pre>
 #### 索引对象
+索引对象负责管理轴标签和其他元数据(轴名称等).构建Series或者DateFrame时,任何数组或其他序列的标签都会被转成一个indeex
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>4</b></font><font color="#008700">]: </font>obj = Series(<font color="#008700">range</font>(<font color="#008700">3</font>),index=[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>])                              
+<font color="#008700">In [</font><font color="#8AE234"><b>5</b></font><font color="#008700">]: </font>index = obj.index                                                      
+<font color="#008700">In [</font><font color="#8AE234"><b>6</b></font><font color="#008700">]: </font>index                                                                 
+<font color="#870000">Out[</font><font color="#EF2929"><b>6</b></font><font color="#870000">]: </font>Index([&apos;a&apos;, &apos;b&apos;, &apos;c&apos;], dtype=&apos;object&apos;)
+<font color="#008700">In [</font><font color="#8AE234"><b>7</b></font><font color="#008700">]: </font>index[<font color="#008700">1</font>:]                                                               
+<font color="#870000">Out[</font><font color="#EF2929"><b>7</b></font><font color="#870000">]: </font>Index([&apos;b&apos;, &apos;c&apos;], dtype=&apos;object&apos;)
+</pre>
+`注意:index里面的数据不可修改`
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>11</b></font><font color="#008700">]: </font>index = pd.Index(np.arange(<font color="#008700">3</font>))                                         
+<font color="#008700">In [</font><font color="#8AE234"><b>12</b></font><font color="#008700">]: </font>obj2 = Series([<font color="#008700">1.5</font>,-<font color="#008700">2.5</font>,<font color="#008700">0</font>],index=index)                         
+<font color="#008700">In [</font><font color="#8AE234"><b>13</b></font><font color="#008700">]: </font>obj2.index <font color="#AF00FF"><b>is</b></font> index                                 
+<font color="#870000">Out[</font><font color="#EF2929"><b>13</b></font><font color="#870000">]: </font>True
+</pre>
+更多P136,知道基本的其实就好
+
+同样的.index可以进行索引
+index的方法和属性P137
+### 基本功能
+#### 重新索引
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>14</b></font><font color="#008700">]: </font>obj = Series([<font color="#008700">4.5</font>,<font color="#008700">7.2</font>,-<font color="#008700">5.3</font>,<font color="#008700">3.6</font>],index=[<font color="#AF5F00">&apos;d&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>])               
+
+<font color="#008700">In [</font><font color="#8AE234"><b>15</b></font><font color="#008700">]: </font>obj                                                                    
+<font color="#870000">Out[</font><font color="#EF2929"><b>15</b></font><font color="#870000">]: </font>
+d    4.5
+b    7.2
+a   -5.3
+c    3.6
+dtype: float64
+<font color="#008700">In [</font><font color="#8AE234"><b>16</b></font><font color="#008700">]: </font>obj2 = obj.reindex([<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>,<font color="#AF5F00">&apos;e&apos;</font>])                              
+<font color="#008700">In [</font><font color="#8AE234"><b>17</b></font><font color="#008700">]: </font>obj2                                                                   
+<font color="#870000">Out[</font><font color="#EF2929"><b>17</b></font><font color="#870000">]: </font>
+a   -5.3
+b    7.2
+c    3.6
+d    4.5
+e    NaN
+dtype: float64
+<font color="#008700">In [</font><font color="#8AE234"><b>18</b></font><font color="#008700">]: </font>obj                                                                    
+<font color="#870000">Out[</font><font color="#EF2929"><b>18</b></font><font color="#870000">]: </font>
+d    4.5
+b    7.2
+a   -5.3
+c    3.6
+dtype: float64
+</pre>
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>19</b></font><font color="#008700">]: </font>obj.reindex([<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>,<font color="#AF5F00">&apos;e&apos;</font>],fill_value=<font color="#008700">0</font>)                        
+<font color="#870000">Out[</font><font color="#EF2929"><b>19</b></font><font color="#870000">]: </font>
+a   -5.3
+b    7.2
+c    3.6
+d    4.5
+e    0.0
+dtype: float64
+</pre>
+
+填充
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>22</b></font><font color="#008700">]: </font>obj3.reindex(<font color="#008700">range</font>(<font color="#008700">6</font>),method=<font color="#AF5F00">&apos;ffill&apos;</font>)                                  
+<font color="#870000">Out[</font><font color="#EF2929"><b>22</b></font><font color="#870000">]: </font>
+0      blue
+1      blue
+2    purple
+3    purple
+4    yellow
+5    yellow
+dtype: object
+</pre>
+更多填充的method选项P138
+
+修改columns索引
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>24</b></font><font color="#008700">]: </font>frame = DataFrame(np.arange(<font color="#008700">9</font>).reshape((<font color="#008700">3</font>,<font color="#008700">3</font>)),index=[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>],colum
+<font color="#008700">    ...: </font>ns=[<font color="#AF5F00">&apos;Ohio&apos;</font>,<font color="#AF5F00">&apos;Texas&apos;</font>,<font color="#AF5F00">&apos;California&apos;</font>])                                      
+
+<font color="#008700">In [</font><font color="#8AE234"><b>25</b></font><font color="#008700">]: </font>frame                                                                  
+<font color="#870000">Out[</font><font color="#EF2929"><b>25</b></font><font color="#870000">]: </font>
+   Ohio  Texas  California
+a     0      1           2
+c     3      4           5
+d     6      7           8
+
+<font color="#008700">In [</font><font color="#8AE234"><b>26</b></font><font color="#008700">]: </font>states = [<font color="#AF5F00">&apos;Texas&apos;</font>,<font color="#AF5F00">&apos;Utah&apos;</font>,<font color="#AF5F00">&apos;California&apos;</font>]                                 
+
+<font color="#008700">In [</font><font color="#8AE234"><b>27</b></font><font color="#008700">]: </font>frame.reindex(columns=states)                                          
+<font color="#870000">Out[</font><font color="#EF2929"><b>27</b></font><font color="#870000">]: </font>
+   Texas  Utah  California
+a      1   NaN           2
+c      4   NaN           5
+d      7   NaN           8
+</pre>
+同时进行index,column修改,进行method填充时只能进行轴0填充
+更多reindex参数 P140
+
+#### 丢弃指定轴上的项
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>31</b></font><font color="#008700">]: </font>obj = Series(np.arange(<font color="#008700">5</font>),index=[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>,<font color="#AF5F00">&apos;e&apos;</font>])                 
+
+<font color="#008700">In [</font><font color="#8AE234"><b>32</b></font><font color="#008700">]: </font>new_obj = obj.drop(<font color="#AF5F00">&apos;c&apos;</font>)                                                
+
+<font color="#008700">In [</font><font color="#8AE234"><b>33</b></font><font color="#008700">]: </font>new_obj                                                                
+<font color="#870000">Out[</font><font color="#EF2929"><b>33</b></font><font color="#870000">]: </font>
+a    0
+b    1
+d    3
+e    4
+dtype: int64
+</pre>
+删除column
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>36</b></font><font color="#008700">]: </font>data.drop<span style="background-color:#AFD7D7"><font color="#000000">(</font></span><font color="#AF5F00">&apos;two&apos;</font>,axis=<font color="#008700">1</font><span style="background-color:#870000"><font color="#FF8787">)</font></span>     </pre>
+#### 索引,选取和过滤
+<pre>a    0.0
+b    1.0
+c    2.0
+d    3.0
+dtype: float64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>39</b></font><font color="#008700">]: </font>obj[<font color="#AF5F00">&apos;b&apos;</font>]                                                               
+<font color="#870000">Out[</font><font color="#EF2929"><b>39</b></font><font color="#870000">]: </font>1.0
+
+<font color="#008700">In [</font><font color="#8AE234"><b>40</b></font><font color="#008700">]: </font>obj[<font color="#008700">1</font>]                                                                 
+<font color="#870000">Out[</font><font color="#EF2929"><b>40</b></font><font color="#870000">]: </font>1.0
+
+<font color="#008700">In [</font><font color="#8AE234"><b>41</b></font><font color="#008700">]: </font>obj[<font color="#008700">2</font>:<font color="#008700">4</font>]                                                               
+<font color="#870000">Out[</font><font color="#EF2929"><b>41</b></font><font color="#870000">]: </font>
+c    2.0
+d    3.0
+dtype: float64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>42</b></font><font color="#008700">]: </font>obj[[<font color="#008700">1</font>,<font color="#008700">3</font>]]                                                             
+<font color="#870000">Out[</font><font color="#EF2929"><b>42</b></font><font color="#870000">]: </font>
+b    1.0
+d    3.0
+dtype: float64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>43</b></font><font color="#008700">]: </font>obj[[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>]]                                                         
+<font color="#870000">Out[</font><font color="#EF2929"><b>43</b></font><font color="#870000">]: </font>
+a    0.0
+c    2.0
+dtype: float64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>44</b></font><font color="#008700">]: </font>obj[obj&lt;<font color="#008700">2</font>]                                                             
+<font color="#870000">Out[</font><font color="#EF2929"><b>44</b></font><font color="#870000">]: </font>
+a    0.0
+b    1.0
+dtype: float64
+</pre>
+
+`标签切片运算和普通的切片运算是不同的,它的末端是包含的'
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>45</b></font><font color="#008700">]: </font>obj[<font color="#AF5F00">&apos;b&apos;</font>:<font color="#AF5F00">&apos;c&apos;</font>]                                                           
+<font color="#870000">Out[</font><font color="#EF2929"><b>45</b></font><font color="#870000">]: </font>
+b    1.0
+c    2.0
+dtype: float64
+</pre>
+赋值
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>46</b></font><font color="#008700">]: </font>obj[<font color="#AF5F00">&apos;b&apos;</font>:<font color="#AF5F00">&apos;c&apos;</font>] = <font color="#008700">5</font>                                                       
+
+<font color="#008700">In [</font><font color="#8AE234"><b>47</b></font><font color="#008700">]: </font>obj                                                                    
+<font color="#870000">Out[</font><font color="#EF2929"><b>47</b></font><font color="#870000">]: </font>
+a    0.0
+b    5.0
+c    5.0
+d    3.0
+dtype: float64
+</pre>
+
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>49</b></font><font color="#008700">]: </font>data                                                                   
+<font color="#870000">Out[</font><font color="#EF2929"><b>49</b></font><font color="#870000">]: </font>
+          one  two  three  four
+Ohio        0    1      2     3
+Colorado    4    5      6     7
+Utah        8    9     10    11
+New York   12   13     14    15
+
+<font color="#008700">In [</font><font color="#8AE234"><b>50</b></font><font color="#008700">]: </font>data[<font color="#AF5F00">&apos;two&apos;</font>]                                                            
+<font color="#870000">Out[</font><font color="#EF2929"><b>50</b></font><font color="#870000">]: </font>
+Ohio         1
+Colorado     5
+Utah         9
+New York    13
+Name: two, dtype: int64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>51</b></font><font color="#008700">]: </font>data[[<font color="#AF5F00">&apos;three&apos;</font>,<font color="#AF5F00">&apos;two&apos;</font>]]                                                  
+<font color="#870000">Out[</font><font color="#EF2929"><b>51</b></font><font color="#870000">]: </font>
+          three  two
+Ohio          2    1
+Colorado      6    5
+Utah         10    9
+New York     14   13
+</pre>
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>52</b></font><font color="#008700">]: </font>data[:<font color="#008700">2</font>]                                                               
+<font color="#870000">Out[</font><font color="#EF2929"><b>52</b></font><font color="#870000">]: </font>
+          one  two  three  four
+Ohio        0    1      2     3
+Colorado    4    5      6     7
+
+<font color="#008700">In [</font><font color="#8AE234"><b>53</b></font><font color="#008700">]: </font>data[data[<font color="#AF5F00">&apos;three&apos;</font>]&gt;<font color="#008700">5</font>]                                                  
+<font color="#870000">Out[</font><font color="#EF2929"><b>53</b></font><font color="#870000">]: </font>
+          one  two  three  four
+Colorado    4    5      6     7
+Utah        8    9     10    11
+New York   12   13     14    15
+</pre>
+布尔运算
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>54</b></font><font color="#008700">]: </font>data[data &lt; <font color="#008700">5</font>] = <font color="#008700">0</font>                                                     
+
+<font color="#008700">In [</font><font color="#8AE234"><b>55</b></font><font color="#008700">]: </font>data                                                                   
+<font color="#870000">Out[</font><font color="#EF2929"><b>55</b></font><font color="#870000">]: </font>
+          one  two  three  four
+Ohio        0    0      0     0
+Colorado    0    5      6     7
+Utah        8    9     10    11
+New York   12   13     14    15
+</pre>
+更多索引手段
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>56</b></font><font color="#008700">]: </font>data.ix[<font color="#AF5F00">&apos;Colorado&apos;</font>,[<font color="#AF5F00">&apos;two&apos;</font>,<font color="#AF5F00">&apos;three&apos;</font>]]                                    
+/home/wangjuncheng/.local/bin/ipython:1: DeprecationWarning: 
+.ix is deprecated. Please use
+.loc for label based indexing or
+.iloc for positional indexing
+
+See the documentation here:
+http://pandas.pydata.org/pandas-docs/stable/indexing.html#ix-indexer-is-deprecated
+  #!/usr/bin/python3
+<font color="#870000">Out[</font><font color="#EF2929"><b>56</b></font><font color="#870000">]: </font>
+two      5
+three    6
+Name: Colorado, dtype: int64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>57</b></font><font color="#008700">]: </font>data.ix[<font color="#008700">2</font>]                                                             
+/home/wangjuncheng/.local/bin/ipython:1: DeprecationWarning: 
+.ix is deprecated. Please use
+.loc for label based indexing or
+.iloc for positional indexing
+
+See the documentation here:
+http://pandas.pydata.org/pandas-docs/stable/indexing.html#ix-indexer-is-deprecated
+  #!/usr/bin/python3
+<font color="#870000">Out[</font><font color="#EF2929"><b>57</b></font><font color="#870000">]: </font>
+one       8
+two       9
+three    10
+four     11
+Name: Utah, dtype: int64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>58</b></font><font color="#008700">]: </font>data.ix[:<font color="#AF5F00">&apos;Utah&apos;</font>,<font color="#AF5F00">&apos;two&apos;</font>]                                                 
+/home/wangjuncheng/.local/bin/ipython:1: DeprecationWarning: 
+.ix is deprecated. Please use
+.loc for label based indexing or
+.iloc for positional indexing
+
+See the documentation here:
+http://pandas.pydata.org/pandas-docs/stable/indexing.html#ix-indexer-is-deprecated
+  #!/usr/bin/python3
+<font color="#870000">Out[</font><font color="#EF2929"><b>58</b></font><font color="#870000">]: </font>
+Ohio        0
+Colorado    5
+Utah        9
+Name: two, dtype: int64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>59</b></font><font color="#008700">]: </font>data.ix[data.three &gt; <font color="#008700">5</font>,:<font color="#008700">3</font>]                                             
+/home/wangjuncheng/.local/bin/ipython:1: DeprecationWarning: 
+.ix is deprecated. Please use
+.loc for label based indexing or
+.iloc for positional indexing
+
+See the documentation here:
+http://pandas.pydata.org/pandas-docs/stable/indexing.html#ix-indexer-is-deprecated
+  #!/usr/bin/python3
+<font color="#870000">Out[</font><font color="#EF2929"><b>59</b></font><font color="#870000">]: </font>
+          one  two  three
+Colorado    0    5      6
+Utah        8    9     10
+New York   12   13     14
+</pre>
+更多索引选项P144
+
+#### 算术运算和数据对齐
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>60</b></font><font color="#008700">]: </font>s1 = Series([<font color="#008700">7.3</font>,-<font color="#008700">2.6</font>,<font color="#008700">3.5</font>,<font color="#008700">1.5</font>],index=[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;e&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>])                
+
+<font color="#008700">In [</font><font color="#8AE234"><b>61</b></font><font color="#008700">]: </font>s2 = Series([<font color="#008700">1</font>,<font color="#008700">2</font>,<font color="#008700">3</font>,<font color="#008700">4</font>],index=[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>])                         
+
+<font color="#008700">In [</font><font color="#8AE234"><b>62</b></font><font color="#008700">]: </font>s1+s2                                                                  
+<font color="#870000">Out[</font><font color="#EF2929"><b>62</b></font><font color="#870000">]: </font>
+a    8.3
+b    NaN
+c    0.4
+d    5.5
+e    NaN
+dtype: float64
+</pre>
+`注意DataFrame和Series操作不一样`
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>6</b></font><font color="#008700">]: </font>df1 = DataFrame(np.arange(<font color="#008700">9.</font>).reshape((<font color="#008700">3</font>,<font color="#008700">3</font>)),columns=<font color="#008700">list</font>(<font color="#AF5F00">&apos;bcd&apos;</font>),index=[
+<font color="#008700">   ...: </font><font color="#AF5F00">&apos;Ohio&apos;</font>,<font color="#AF5F00">&apos;Texas&apos;</font>,<font color="#AF5F00">&apos;Colorado&apos;</font>])                                             
+
+<font color="#008700">In [</font><font color="#8AE234"><b>7</b></font><font color="#008700">]: </font>df2 = DataFrame(np.arange(<font color="#008700">12.</font>).reshape((<font color="#008700">4</font>,<font color="#008700">3</font>)),columns=<font color="#008700">list</font>(<font color="#AF5F00">&apos;bde&apos;</font>),index=
+<font color="#008700">   ...: </font>[<font color="#AF5F00">&apos;Ohio&apos;</font>,<font color="#AF5F00">&apos;Texas&apos;</font>,<font color="#AF5F00">&apos;Colorado&apos;</font>,<font color="#AF5F00">&apos;Oregon&apos;</font>])                                   
+
+<font color="#008700">In [</font><font color="#8AE234"><b>8</b></font><font color="#008700">]: </font>df1 + df2                                                               
+<font color="#870000">Out[</font><font color="#EF2929"><b>8</b></font><font color="#870000">]: </font>
+             b   c     d   e
+Colorado  12.0 NaN  15.0 NaN
+Ohio       0.0 NaN   3.0 NaN
+Oregon     NaN NaN   NaN NaN
+Texas      6.0 NaN   9.0 NaN
+</pre>
+算术填充
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>9</b></font><font color="#008700">]: </font>df1.add(df2,fill_value=<font color="#008700">0</font>)                                               
+<font color="#870000">Out[</font><font color="#EF2929"><b>9</b></font><font color="#870000">]: </font>
+             b    c     d     e
+Colorado  12.0  7.0  15.0   8.0
+Ohio       0.0  1.0   3.0   2.0
+Oregon     9.0  NaN  10.0  11.0
+Texas      6.0  4.0   9.0   5.0
+</pre>
+函数|作用
+|-|-|
+df.add()|加
+df.sub()|减
+df.div()|除
+df.mul()|乘
+#### DataFrame和Series之间的运算
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>11</b></font><font color="#008700">]: </font>arr = np.arange(<font color="#008700">12</font>).reshape((<font color="#008700">3</font>,<font color="#008700">4</font>))                                     
+
+<font color="#008700">In [</font><font color="#8AE234"><b>12</b></font><font color="#008700">]: </font>arr                                                                    
+<font color="#870000">Out[</font><font color="#EF2929"><b>12</b></font><font color="#870000">]: </font>
+array([[ 0,  1,  2,  3],
+       [ 4,  5,  6,  7],
+       [ 8,  9, 10, 11]])
+
+<font color="#008700">In [</font><font color="#8AE234"><b>13</b></font><font color="#008700">]: </font>arr[<font color="#008700">0</font>]                                                                 
+<font color="#870000">Out[</font><font color="#EF2929"><b>13</b></font><font color="#870000">]: </font>array([0, 1, 2, 3])
+
+<font color="#008700">In [</font><font color="#8AE234"><b>14</b></font><font color="#008700">]: </font>arr-arr[<font color="#008700">0</font>]                                                             
+<font color="#870000">Out[</font><font color="#EF2929"><b>14</b></font><font color="#870000">]: </font>
+array([[0, 0, 0, 0],
+       [4, 4, 4, 4],
+       [8, 8, 8, 8]])
+</pre>
+
+DataFrame-Series
+
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>13</b></font><font color="#008700">]: </font>df1                                                                    
+<font color="#870000">Out[</font><font color="#EF2929"><b>13</b></font><font color="#870000">]: </font>
+            b     c     d
+Ohio      0.0   1.0   2.0
+Texas     3.0   4.0   5.0
+Colorado  6.0   7.0   8.0
+aaa       9.0  10.0  11.0
+<font color="#008700">In [</font><font color="#8AE234"><b>14</b></font><font color="#008700">]: </font>series = df1.ix[<font color="#008700">0</font>]
+<font color="#008700">In [</font><font color="#8AE234"><b>15</b></font><font color="#008700">]: </font>df1 - series                                                           
+<font color="#870000">Out[</font><font color="#EF2929"><b>15</b></font><font color="#870000">]: </font>
+            b    c    d
+Ohio      0.0  0.0  0.0
+Texas     3.0  3.0  3.0
+Colorado  6.0  6.0  6.0
+aaa       9.0  9.0  9.0
+</pre>
+DataFrame+Series
+<pre><font color="#870000">Out[</font><font color="#EF2929"><b>15</b></font><font color="#870000">]: </font>
+            b    c    d
+Ohio      0.0  0.0  0.0
+Texas     3.0  3.0  3.0
+Colorado  6.0  6.0  6.0
+aaa       9.0  9.0  9.0
+<font color="#008700">In [</font><font color="#8AE234"><b>20</b></font><font color="#008700">]: </font>series2                                                                
+<font color="#870000">Out[</font><font color="#EF2929"><b>20</b></font><font color="#870000">]: </font>
+b    0
+e    1
+f    2
+<font color="#008700">In [</font><font color="#8AE234"><b>23</b></font><font color="#008700">]: </font>df1 + series2                                                          
+<font color="#870000">Out[</font><font color="#EF2929"><b>23</b></font><font color="#870000">]: </font>
+           b     c     d   f
+Ohio     NaN   1.0   3.0 NaN
+Texas    NaN   4.0   6.0 NaN
+Colorado NaN   7.0   9.0 NaN
+aaa      NaN  10.0  12.0 NaN
+</pre>
+列上广播
+<pre>            b     c     d
+Ohio      0.0   1.0   2.0
+Texas     3.0   4.0   5.0
+Colorado  6.0   7.0   8.0
+aaa       9.0  10.0  11.0
+
+<font color="#008700">In [</font><font color="#8AE234"><b>27</b></font><font color="#008700">]: </font>series3                                                                
+<font color="#870000">Out[</font><font color="#EF2929"><b>27</b></font><font color="#870000">]: </font>
+Ohio         2.0
+Texas        5.0
+Colorado     8.0
+aaa         11.0
+Name: d, dtype: float64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>28</b></font><font color="#008700">]: </font>df1.sub(series3,axis=<font color="#008700">0</font>)                                                
+<font color="#870000">Out[</font><font color="#EF2929"><b>28</b></font><font color="#870000">]: </font>
+            b    c    d
+Ohio     -2.0 -1.0  0.0
+Texas    -2.0 -1.0  0.0
+Colorado -2.0 -1.0  0.0
+aaa      -2.0 -1.0  0.0
+</pre>
+#### 函数应用和映射
+numpy的ufuncs函数也可以操作pandas对象
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>31</b></font><font color="#008700">]: </font>np.abs(frame)                                                                                                       
+<font color="#870000">Out[</font><font color="#EF2929"><b>31</b></font><font color="#870000">]: </font>
+          b         d         e
+u  1.935225  0.275252  0.265381
+o  2.420749  0.141706  0.056011
+t  1.517044  0.141860  1.389832
+e  0.403460  1.177187  0.336314</pre>
+
+lambda
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>32</b></font><font color="#008700">]: </font>f = <font color="#008700"><b>lambda</b></font> x: x.max() - x.min()                                                                                     
+
+<font color="#008700">In [</font><font color="#8AE234"><b>33</b></font><font color="#008700">]: </font>frame.apply(f)                                                                                                      
+<font color="#870000">Out[</font><font color="#EF2929"><b>33</b></font><font color="#870000">]: </font>
+b    4.355974
+d    1.035481
+e    1.726146
+dtype: float64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>34</b></font><font color="#008700">]: </font>frame.apply(f,axis=<font color="#008700">1</font>)                                                                                               
+<font color="#870000">Out[</font><font color="#EF2929"><b>34</b></font><font color="#870000">]: </font>
+u    1.669844
+o    2.562455
+t    2.906876
+e    1.580647
+dtype: float64
+</pre>
+处理浮点型数字
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>35</b></font><font color="#008700">]: format</font> = <font color="#008700"><b>lambda</b></font> x:<font color="#AF5F00">&apos;</font><font color="#AF5F87"><b>%.2f</b></font><font color="#AF5F00">&apos;</font> %x                                                                                         
+
+<font color="#008700">In [</font><font color="#8AE234"><b>36</b></font><font color="#008700">]: </font>frame.applymap(<font color="#008700">format</font>)                                                                                              
+<font color="#870000">Out[</font><font color="#EF2929"><b>36</b></font><font color="#870000">]: </font>
+       b     d      e
+u   1.94  0.28   0.27
+o  -2.42  0.14  -0.06
+t  -1.52  0.14   1.39
+e  -0.40  1.18  -0.34
+<font color="#008700">In [</font><font color="#8AE234"><b>37</b></font><font color="#008700">]: </font>frame[<font color="#AF5F00">&apos;e&apos;</font>].map(<font color="#008700">format</font>)                                                                                              
+<font color="#870000">Out[</font><font color="#EF2929"><b>37</b></font><font color="#870000">]: </font>
+u     0.27
+o    -0.06
+t     1.39
+e    -0.34
+Name: e, dtype: object
+</pre>
+#### 排序和排名
+index排序
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>41</b></font><font color="#008700">]: </font>obj = Series(<font color="#008700">range</font>(<font color="#008700">4</font>),index=[<font color="#AF5F00">&apos;d&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>])                                                                      
+
+<font color="#008700">In [</font><font color="#8AE234"><b>42</b></font><font color="#008700">]: </font>obj.sort_index()                                                                                                    
+<font color="#870000">Out[</font><font color="#EF2929"><b>42</b></font><font color="#870000">]: </font>
+a    1
+b    2
+c    3
+d    0
+dtype: int64
+</pre>
+改轴就加个axis参数,降序,ascending=False
+
+值排序
+`注意版本.有些高版本貌似用series.sort_values()代替了series.oder()`
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>46</b></font><font color="#008700">]: </font>obj.sort_values()                                                                                                   
+<font color="#870000">Out[</font><font color="#EF2929"><b>46</b></font><font color="#870000">]: </font>
+2   -3
+3    2
+0    4
+1    7
+</pre>
+Nan值都会被排到末尾
+
+指定列排序
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>50</b></font><font color="#008700">]: </font>frame.sort_index(by=[<font color="#AF5F00">&apos;b&apos;</font>,])                                                                                         
+/home/wangjuncheng/.local/bin/ipython:1: FutureWarning: by argument to sort_index is deprecated, please use .sort_values(by=...)
+  #!/usr/bin/python3
+<font color="#870000">Out[</font><font color="#EF2929"><b>50</b></font><font color="#870000">]: </font>
+   b   c
+1  1  17
+3  2   7
+0  3   5
+2  7   3
+</pre>
+#### 排名(ranking)
+P151 大概就是讲的是索引由某种计算过后的大小值吧
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>51</b></font><font color="#008700">]: </font>obj = Series([<font color="#008700">7</font>,-<font color="#008700">5</font>,<font color="#008700">6</font>,<font color="#008700">3</font>,<font color="#008700">6</font>,<font color="#008700">6</font>])                                                                                        
+
+<font color="#008700">In [</font><font color="#8AE234"><b>52</b></font><font color="#008700">]: </font>obj.rank()                                                                                                          
+<font color="#870000">Out[</font><font color="#EF2929"><b>52</b></font><font color="#870000">]: </font>
+0    6.0
+1    1.0
+2    4.0
+3    2.0
+4    4.0
+5    4.0
+dtype: float64
+</pre>
+更多rankP151
+#### 带有重复值的轴索引
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>53</b></font><font color="#008700">]: </font>obj = Series(<font color="#008700">range</font>(<font color="#008700">5</font>),index=[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>])                                                                  
+
+<font color="#008700">In [</font><font color="#8AE234"><b>54</b></font><font color="#008700">]: </font>obj                                                                                                                 
+<font color="#870000">Out[</font><font color="#EF2929"><b>54</b></font><font color="#870000">]: </font>
+a    0
+a    1
+b    2
+b    3
+c    4
+dtype: int64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>55</b></font><font color="#008700">]: </font><font color="#5F8787"><i># 检测是否唯一</i></font>                                                                                                      
+
+<font color="#008700">In [</font><font color="#8AE234"><b>56</b></font><font color="#008700">]: </font>obj.index.is_unique                                                                                                 
+<font color="#870000">Out[</font><font color="#EF2929"><b>56</b></font><font color="#870000">]: </font>False
+
+<font color="#008700">In [</font><font color="#8AE234"><b>57</b></font><font color="#008700">]: </font>obj[<font color="#AF5F00">&apos;a&apos;</font>]                                                                                                            
+<font color="#870000">Out[</font><font color="#EF2929"><b>57</b></font><font color="#870000">]: </font>
+a    0
+a    1
+dtype: int64
+
+</pre>
+对于DataFrame也是一样
+
+
