@@ -1104,5 +1104,332 @@ dtype: int64
 
 </pre>
 对于DataFrame也是一样
+### 汇总和计算描述统计
+求和
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>7</b></font><font color="#008700">]: </font>df                                                                      
+<font color="#870000">Out[</font><font color="#EF2929"><b>7</b></font><font color="#870000">]: </font>
+    one  two
+a  1.40  NaN
+b  7.10  4.5
+c   NaN  NaN
+d  0.75 -1.3
 
+<font color="#008700">In [</font><font color="#8AE234"><b>8</b></font><font color="#008700">]: </font>df.sum()                                                                
+<font color="#870000">Out[</font><font color="#EF2929"><b>8</b></font><font color="#870000">]: </font>
+one    9.25
+two    3.20
+dtype: float64
+<font color="#008700">In [</font><font color="#8AE234"><b>9</b></font><font color="#008700">]: </font>df.sum(axis=<font color="#008700">1</font>)                                                          
+<font color="#870000">Out[</font><font color="#EF2929"><b>9</b></font><font color="#870000">]: </font>
+a     1.40
+b    11.60
+c     0.00
+d    -0.55
+dtype: float64
+</pre>
+`注意:这里的Nan值会被跳过,不计算在内`
+求平均值,不跳过平均值
+<pre>
+<font color="#008700">In [</font><font color="#8AE234"><b>11</b></font><font color="#008700">]: </font>df.mean(axis=<font color="#008700">1</font>,skipna=<font color="#008700"><b>False</b></font>)                                           
+<font color="#870000">Out[</font><font color="#EF2929"><b>11</b></font><font color="#870000">]: </font>
+a      NaN
+b    5.800
+c      NaN
+d   -0.275
+dtype: float64
+</pre>
+更多常用参数P154
+函数|作用
+|-|-|
+df.idmax()|返回最大值的索引
+df.idmin()|返回最小值的索引
+df.cumsun()|累计和
+df.describe()|多数据的汇总统计
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>12</b></font><font color="#008700">]: </font>df.cumsum()                                                                                                       
+<font color="#870000">Out[</font><font color="#EF2929"><b>12</b></font><font color="#870000">]: </font>
+    one  two
+a  1.40  NaN
+b  8.50  4.5
+c   NaN  NaN
+d  9.25  3.2
+</pre>
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>13</b></font><font color="#008700">]: </font>df.describe()                                                                                                     
+<font color="#870000">Out[</font><font color="#EF2929"><b>13</b></font><font color="#870000">]: </font>
+            one       two
+count  3.000000  2.000000
+mean   3.083333  1.600000
+std    3.493685  4.101219
+min    0.750000 -1.300000
+25%    1.075000  0.150000
+50%    1.400000  1.600000
+75%    4.250000  3.050000
+max    7.100000  4.500000
+</pre>
+`对于非数值的数据,descibe会产生另外一种汇总统计`
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>14</b></font><font color="#008700">]: </font>obj = Series([<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>]*<font color="#008700">4</font>)                                                                                 
 
+<font color="#008700">In [</font><font color="#8AE234"><b>15</b></font><font color="#008700">]: </font>obj.describe()                                                                                                    
+<font color="#870000">Out[</font><font color="#EF2929"><b>15</b></font><font color="#870000">]: </font>
+count     16
+unique     3
+top        a
+freq       8
+dtype: object
+</pre>
+汇总统计相关的方法P155
+#### 相关系数与协方差
+P156,我的pandas没有其中的包,没得办法演示
+#### 维一值,值计数以及成员资格
+<pre>
+<font color="#008700">In [</font><font color="#8AE234"><b>17</b></font><font color="#008700">]: </font>obj = Series([<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>])                                                        
+
+<font color="#008700">In [</font><font color="#8AE234"><b>18</b></font><font color="#008700">]: </font>obj.unique()                                                                                   
+<font color="#870000">Out[</font><font color="#EF2929"><b>18</b></font><font color="#870000">]: </font>array([&apos;c&apos;, &apos;a&apos;, &apos;d&apos;, &apos;b&apos;], dtype=object)
+</pre>
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>23</b></font><font color="#008700">]: </font>obj.value_counts()                                                                             
+<font color="#870000">Out[</font><font color="#EF2929"><b>23</b></font><font color="#870000">]: </font>
+c    2
+a    2
+b    1
+d    1
+dtype: int64
+</pre>
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>26</b></font><font color="#008700">]: </font>obj.value_counts(sort=<font color="#008700"><b>False</b></font>)                                                                   
+<font color="#870000">Out[</font><font color="#EF2929"><b>26</b></font><font color="#870000">]: </font>
+d    1
+a    2
+c    2
+b    1
+dtype: int64
+</pre>
+
+判断矢量化集合的成员资格
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>27</b></font><font color="#008700">]: </font>mask = obj.isin([<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>])                                                                     
+
+<font color="#008700">In [</font><font color="#8AE234"><b>28</b></font><font color="#008700">]: </font>mask                                                                                           
+<font color="#870000">Out[</font><font color="#EF2929"><b>28</b></font><font color="#870000">]: </font>
+0     True
+1    False
+2    False
+3    False
+4     True
+5     True
+dtype: bool
+</pre>
+更多P159
+
+柱状图计数统计P159
+### 处理缺失值
+<pre><font color="#870000">Out[</font><font color="#EF2929"><b>30</b></font><font color="#870000">]: </font>
+0      a
+1    NaN
+2      c
+dtype: object
+
+<font color="#008700">In [</font><font color="#8AE234"><b>31</b></font><font color="#008700">]: </font>s.isnull()                                                                                     
+<font color="#870000">Out[</font><font color="#EF2929"><b>31</b></font><font color="#870000">]: </font>
+0    False
+1     True
+2    False
+dtype: bool
+</pre>
+None也会被当做Na处理
+NA处理方法P160
+
+注意DataFrame处理掉NA需要传入how='all'来处理掉全为NA的行
+列传入axis=1
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>37</b></font><font color="#008700">]: </font>df                                                                                             
+<font color="#870000">Out[</font><font color="#EF2929"><b>37</b></font><font color="#870000">]: </font>
+          0         1         2
+0  0.094918       NaN       NaN
+1  1.876534       NaN       NaN
+2 -1.380984       NaN       NaN
+3  1.253326       NaN -0.648448
+4  0.621994       NaN  0.603323
+5  0.620920  0.096380  1.606731
+6 -0.181262  0.397764 -0.158520
+
+<font color="#008700">In [</font><font color="#8AE234"><b>38</b></font><font color="#008700">]: </font>df.dropna(thresh=<font color="#008700">1</font>)                                                                            
+<font color="#870000">Out[</font><font color="#EF2929"><b>38</b></font><font color="#870000">]: </font>
+          0         1         2
+0  0.094918       NaN       NaN
+1  1.876534       NaN       NaN
+2 -1.380984       NaN       NaN
+3  1.253326       NaN -0.648448
+4  0.621994       NaN  0.603323
+5  0.620920  0.096380  1.606731
+6 -0.181262  0.397764 -0.158520
+
+<font color="#008700">In [</font><font color="#8AE234"><b>39</b></font><font color="#008700">]: </font>df.dropna(thresh=<font color="#008700">3</font>)                                                                            
+<font color="#870000">Out[</font><font color="#EF2929"><b>39</b></font><font color="#870000">]: </font>
+          0         1         2
+5  0.620920  0.096380  1.606731
+6 -0.181262  0.397764 -0.158520
+</pre>
+这个tresh应该是小于几个非NA数字就删除那行
+#### 填充数据
+对不同列的填充
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>41</b></font><font color="#008700">]: </font>df.fillna({<font color="#008700">1</font>:<font color="#008700">0.5</font>,<font color="#008700">3</font>:<font color="#008700">1</font>})                                                                         
+<font color="#870000">Out[</font><font color="#EF2929"><b>41</b></font><font color="#870000">]: </font>
+          0         1         2
+0  0.094918  0.500000       NaN
+1  1.876534  0.500000       NaN
+2 -1.380984  0.500000       NaN
+3  1.253326  0.500000 -0.648448
+4  0.621994  0.500000  0.603323
+5  0.620920  0.096380  1.606731
+6 -0.181262  0.397764 -0.158520
+</pre>
+限制填充
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>42</b></font><font color="#008700">]: </font>df.fillna(method=<font color="#AF5F00">&apos;ffill&apos;</font>,limit=<font color="#008700">2</font>)                                                              
+<font color="#870000">Out[</font><font color="#EF2929"><b>42</b></font><font color="#870000">]: </font>
+          0         1         2
+0  0.094918       NaN       NaN
+1  1.876534       NaN       NaN
+2 -1.380984       NaN       NaN
+3  1.253326       NaN -0.648448
+4  0.621994       NaN  0.603323
+5  0.620920  0.096380  1.606731
+6 -0.181262  0.397764 -0.158520
+</pre>
+插入平均值
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>43</b></font><font color="#008700">]: </font>data.fillna(data.mean())  </pre>
+参数P164
+### 层次化索引
+层次化索引是pandas一个重要的功能,主要处理多个索引级别,可以用低纬度的办法处理高纬度的数据
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>44</b></font><font color="#008700">]: </font>data = Series(np.random.randn(<font color="#008700">10</font>),index=[[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;c&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>,<font color="#AF5F00">&apos;d&apos;</font>],[<font color="#008700">1</font>,<font color="#008700">2</font>,<font color="#008700">3</font>,<font color="#008700">1</font>,<font color="#008700">2</font>,<font color="#008700">3</font>
+<font color="#008700">    ...: </font>,<font color="#008700">1</font>,<font color="#008700">2</font>,<font color="#008700">2</font>,<font color="#008700">3</font>]])                                                                                    
+
+<font color="#008700">In [</font><font color="#8AE234"><b>45</b></font><font color="#008700">]: </font>data                                                                                           
+<font color="#870000">Out[</font><font color="#EF2929"><b>45</b></font><font color="#870000">]: </font>
+a  1   -0.428355
+   2    1.067758
+   3   -0.991278
+b  1   -1.265598
+   2   -0.355337
+   3    0.613420
+c  1   -0.208513
+   2    0.402992
+d  2   -0.270967
+   3   -0.561076
+dtype: float64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>46</b></font><font color="#008700">]: </font>data.index                                                                                     
+<font color="#870000">Out[</font><font color="#EF2929"><b>46</b></font><font color="#870000">]: </font>
+MultiIndex(levels=[[&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;d&apos;], [1, 2, 3]],
+           codes=[[0, 0, 0, 1, 1, 1, 2, 2, 3, 3], [0, 1, 2, 0, 1, 2, 0, 1, 1, 2]])
+
+<font color="#008700">In [</font><font color="#8AE234"><b>47</b></font><font color="#008700">]: </font><font color="#5F8787"><i>#取值</i></font>                                                                                          
+
+<font color="#008700">In [</font><font color="#8AE234"><b>48</b></font><font color="#008700">]: </font>data[<font color="#AF5F00">&apos;b&apos;</font>]                                                                                      
+<font color="#870000">Out[</font><font color="#EF2929"><b>48</b></font><font color="#870000">]: </font>
+1   -1.265598
+2   -0.355337
+3    0.613420
+dtype: float64
+
+<font color="#008700">In [</font><font color="#8AE234"><b>49</b></font><font color="#008700">]: </font>data[<font color="#AF5F00">&apos;b&apos;</font>][<font color="#008700">1</font>]                                                                                   
+<font color="#870000">Out[</font><font color="#EF2929"><b>49</b></font><font color="#870000">]: </font>-1.2655979026385107
+</pre>
+内层选取
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>50</b></font><font color="#008700">]: </font>data[:,<font color="#008700">2</font>]                                                                                      
+<font color="#870000">Out[</font><font color="#EF2929"><b>50</b></font><font color="#870000">]: </font>
+a    1.067758
+b   -0.355337
+c    0.402992
+d   -0.270967
+dtype: float64</pre>
+
+转换成DataFrame
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>51</b></font><font color="#008700">]: </font>data.unstack()                                                                                 
+<font color="#870000">Out[</font><font color="#EF2929"><b>51</b></font><font color="#870000">]: </font>
+          1         2         3
+a -0.428355  1.067758 -0.991278
+b -1.265598 -0.355337  0.613420
+c -0.208513  0.402992       NaN
+d       NaN -0.270967 -0.561076
+</pre>
+DataFrame转换成Series
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>54</b></font><font color="#008700">]: </font>df.stack()                                                                                     
+<font color="#870000">Out[</font><font color="#EF2929"><b>54</b></font><font color="#870000">]: </font>
+a  1   -0.428355
+   2    1.067758
+   3   -0.991278
+b  1   -1.265598
+   2   -0.355337
+   3    0.613420
+c  1   -0.208513
+   2    0.402992
+d  2   -0.270967
+   3   -0.561076
+dtype: float64
+</pre>
+DataFrame的每条轴都可以有分层索引
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>55</b></font><font color="#008700">]: </font>frame = DataFrame(np.arange(<font color="#008700">12</font>).reshape((<font color="#008700">4</font>,<font color="#008700">3</font>)),index=[[<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;a&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>,<font color="#AF5F00">&apos;b&apos;</font>],[<font color="#008700">1</font>,<font color="#008700">2</font>,<font color="#008700">1</font>,<font color="#008700">2</font>]],columns=[[<font color="#AF5F00">&apos;A</font>
+<font color="#008700">    ...: </font><font color="#AF5F00">&apos;</font>,<font color="#AF5F00">&apos;A&apos;</font>,<font color="#AF5F00">&apos;B&apos;</font>],[<font color="#AF5F00">&apos;S&apos;</font>,<font color="#AF5F00">&apos;E&apos;</font>,<font color="#AF5F00">&apos;C&apos;</font>]])                                                                     
+
+<font color="#008700">In [</font><font color="#8AE234"><b>56</b></font><font color="#008700">]: </font>frame                                                                                          
+<font color="#870000">Out[</font><font color="#EF2929"><b>56</b></font><font color="#870000">]: </font>
+     A       B
+     S   E   C
+a 1  0   1   2
+  2  3   4   5
+b 1  6   7   8
+  2  9  10  11
+</pre>
+每层都可以给定名字
+<pre>
+<font color="#008700">In [</font><font color="#8AE234"><b>58</b></font><font color="#008700">]: </font>frame                                                                                          
+<font color="#870000">Out[</font><font color="#EF2929"><b>58</b></font><font color="#870000">]: </font>
+           A       B
+           S   E   C
+key1 key2           
+a    1     0   1   2
+     2     3   4   5
+b    1     6   7   8
+     2     9  10  11
+
+<font color="#008700">In [</font><font color="#8AE234"><b>59</b></font><font color="#008700">]: </font><font color="#5F8787"><i># columns也是一样</i></font>    </pre>
+####重排分级顺序
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>60</b></font><font color="#008700">]: </font>frame.swaplevel(<font color="#AF5F00">&apos;key1&apos;</font>,<font color="#AF5F00">&apos;key2&apos;</font>)                                                                 
+<font color="#870000">Out[</font><font color="#EF2929"><b>60</b></font><font color="#870000">]: </font>
+           A       B
+           S   E   C
+key2 key1           
+1    a     0   1   2
+2    a     3   4   5
+1    b     6   7   8
+2    b     9  10  11
+</pre>
+重排后排序
+P167
+####根据级别汇总统计
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>63</b></font><font color="#008700">]: </font>frame.sum(level=<font color="#AF5F00">&apos;key2&apos;</font>)                                                                        
+<font color="#870000">Out[</font><font color="#EF2929"><b>63</b></font><font color="#870000">]: </font>
+       A       B
+       S   E   C
+key2            
+1      6   8  10
+2     12  14  16
+</pre>
+Ｐ１６７
+最后一点有点没看懂，先放着，以后再看看
+###其他
+#### 整数索引
+在操作整数索引时
+<pre><font color="#008700">In [</font><font color="#8AE234"><b>67</b></font><font color="#008700">]: </font>ser                                                                                            
+<font color="#870000">Out[</font><font color="#EF2929"><b>67</b></font><font color="#870000">]: </font>
+0    0
+1    1
+2    2
+dtype: int64
+</pre>
+ser[-1]这样的索引容易让pandas迷惑
+如果对非证书索引,这样就没有奇异
+你也可以使用iget_values和irow方法
+P170来得到基于位置的索引
+
+#### 面板数据
+书上说不重要,P170
+
+到这基础也就学完了.后面比较详细的内容建议看书.谢谢你的阅读.
